@@ -1,23 +1,12 @@
 package org.ironchefpython.modapi;
 
-import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.ironchefpython.modapi.error.GeneralModdingException;
 import org.ironchefpython.modapi.error.InvalidComponentRegistration;
 import org.ironchefpython.modapi.error.InvalidEventRegistration;
-import org.ironchefpython.modapi.error.PropertyError;
 import org.ironchefpython.modapi.error.UnregisteredEventException;
-import org.ironchefpython.modapi.primitives.BooleanProperty;
-import org.ironchefpython.modapi.primitives.ColorProperty;
-import org.ironchefpython.modapi.primitives.FunctionProperty;
-import org.ironchefpython.modapi.primitives.NumberProperty;
-import org.ironchefpython.modapi.primitives.StringProperty;
-import org.ironchefpython.modapi.primitives.TextureProperty;
 import org.mockengine.*;
-import org.mozilla.javascript.*;
 
 
 
@@ -28,8 +17,6 @@ public class ModManager {
 	private Engine game;
 	private String name;
 	private static Map<String, ModManager> mods = new HashMap<String, ModManager>();
-	
-
 	
 	public static final String[] STRING_ARRAY = new String[0];
 	

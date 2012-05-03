@@ -1,7 +1,5 @@
 package org.mockengine;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 
 import javassist.CannotCompileException;
@@ -58,7 +56,7 @@ public class DynamicComponentFactory {
 		comp.addField(cxField);
 
 		
-		CtClass[] types = p.getConstructor().getParamClasses(); 
+		CtClass[] types = getParamClasses(p.getConstructor().getProvided(), p.getPropertyMap()); 
 		String body = "{";
 		String[] provided = p.getConstructor().getProvided();
 		for (int i = 0; i < provided.length; i++) {
@@ -104,5 +102,11 @@ public class DynamicComponentFactory {
 		return String.format(COMPONENT_NAME_TEMPLATE, id);
 	}
 
-
+	public CtClass[] getParamClasses(String[] provided, Map<String, DynamicProperty> properties) throws NotFoundException {
+		CtClass[] result = new CtClass[provided.length];
+		for (int i = 0; i < provided.length; i++) {
+			result[i] = ClassPool.getDefault().get(properties.get(provided[i]).getJavaType().getCanonicalName());
+		};
+		return result;
+	}
 }

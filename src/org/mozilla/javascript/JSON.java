@@ -47,7 +47,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Arrays;
 import java.util.List;
@@ -65,8 +64,7 @@ import java.lang.reflect.InvocationTargetException;
  * See ECMA 15.12.
  * @author Matthew Crumley, Raphael Speyer
  */
-public final class JSON extends IdScriptableObject
-{
+public final class JSON extends IdScriptableObject {
     static final long serialVersionUID = -4567599697595654984L;
 
     private static final Object JSON_TAG = "JSON";

@@ -5,9 +5,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mozilla.javascript.*;
-import org.mozilla.javascript.ast.Scope;
 import org.ironchefpython.modapi.error.*;
-import org.ironchefpython.modapi.primitives.*;
 
 import org.mockengine.Engine;
 import org.mockengine.Entity;
@@ -17,6 +15,47 @@ import org.mockengine.Handler;
 public class JsModManager extends ModManager {
 	private Context cx;
 	private Scriptable scope;
+	
+	public enum Primitive implements DynamicProperty {
+		BOOLEAN(boolean.class), 
+		STRING(String.class), 
+		NUMBER(Number.class),
+		COLOR(String.class), 
+		FUNCTION(Callable.class), 
+		TEXTURE(String.class),
+		;
+		
+		private final Class<?> type;
+		Primitive(Class<?> type) {
+			this.type = type;
+		}
+		
+		public DynamicProperty cloneWith(Object object) {
+			try {
+				return (object == null ? this : new DynamicValueProperty(type, object));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		public Class<?> getJavaType() {
+			return type;
+		}
+		
+		public boolean isStatic() {
+			return false;
+		}
+		
+		public Object getValue() {
+			// FIXME produce a better result for a null value
+			throw new NoSuchMethodError();
+		}
+		
+		public Class<?> getFieldType() {
+			return getJavaType();
+		}
+		
+	}
 	
 	public JsModManager(Engine game, String modName) {
 		super(game, modName);
@@ -108,28 +147,28 @@ public class JsModManager extends ModManager {
 		}
 		
 		public DynamicProperty getStringType() {
-			return StringProperty.STRING_TYPE;
+			return Primitive.STRING;
 		}
 
 		public DynamicProperty getNumberType() {
-			return NumberProperty.NUMBER_TYPE;
+			return Primitive.NUMBER;
 		}
 
 		public DynamicProperty getBooleanType() {
-			return BooleanProperty.BOOLEAN_TYPE;
+			return Primitive.BOOLEAN;
 		}
 
 		public DynamicProperty getColorType() {
-			return ColorProperty.COLOR_TYPE;
+			return Primitive.COLOR;
 		}
 
 		public DynamicProperty getFunctionType() {
-			return FunctionProperty.FUNCTION_TYPE;
+			return Primitive.FUNCTION;
 		}
 
 		
 		public DynamicProperty getTextureType() {
-			return TextureProperty.TEXTURE_TYPE;
+			return Primitive.TEXTURE;
 		}
 
 		public DynamicProperty calculatedType(DynamicProperty type, Callable callable) {
@@ -201,7 +240,7 @@ public class JsModManager extends ModManager {
 		if (def instanceof DynamicProperty) {
 			return (DynamicProperty) def;
 		} else if (def instanceof Callable) {
-			return new FunctionProperty((Callable) def);
+			return new DynamicValueProperty(Callable.class, def);
 		}
 		throw new NoSuchMethodError();
 	}
