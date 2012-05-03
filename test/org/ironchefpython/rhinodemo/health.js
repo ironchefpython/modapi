@@ -32,7 +32,6 @@ Health = manager.registerPrototype({
         this.timeSinceLastDamage = 0;
         this.partialRegen = 0;
         this.currentHealth = this.maxHealth;
-        console.log("amazing");
     }),
     "handlers": {
         "damage": function(event) {
