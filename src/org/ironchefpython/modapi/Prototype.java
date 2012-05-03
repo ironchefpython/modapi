@@ -106,7 +106,7 @@ public class Prototype implements EventTarget {
 		public CtClass[] getParamClasses() throws NotFoundException {
 			CtClass[] result = new CtClass[provided.length];
 			for (int i = 0; i < provided.length; i++) {
-				result[i] = ClassPool.getDefault().get(properties.get(provided[i]).getType().getCanonicalName());
+				result[i] = ClassPool.getDefault().get(properties.get(provided[i]).getJavaType().getCanonicalName());
 			};
 			return result;
 		}

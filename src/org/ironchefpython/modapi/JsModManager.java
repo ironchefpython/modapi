@@ -15,11 +15,8 @@ import org.mockengine.Event;
 import org.mockengine.Handler;
 
 public class JsModManager extends ModManager {
-	private static final String INIT_SUFFIX = "!!INIT";
 	private Context cx;
 	private Scriptable scope;
-	private Map<String, Callable> methods; 
-
 	
 	public JsModManager(Engine game, String modName) {
 		super(game, modName);
@@ -28,8 +25,6 @@ public class JsModManager extends ModManager {
 
         ScriptableObject.putProperty(scope, "console", Context.javaToJS(new Console(), scope));
         ScriptableObject.putProperty(scope, "manager", Context.javaToJS(new Facade(), scope));
-        
-        methods = new HashMap<String, Callable>();
 	}
 
 	public void runScript(InputStream is, String name) throws IOException {
@@ -49,16 +44,6 @@ public class JsModManager extends ModManager {
 			System.err.println("js> " + s);
 		}
 	}
-	
-	public Object callMethod(Object obj, String name) {
-		return methods.get(obj.getClass().getName()+'!'+name).call(cx, scope, (Scriptable) Context.javaToJS(obj, scope), null);
-	}
-	
-	public void callInitializer(Object obj) {
-System.out.println(obj.getClass().getName()+INIT_SUFFIX);		
-System.out.println(methods.keySet());		
-		methods.get(obj.getClass().getName()+INIT_SUFFIX).call(cx, scope, (Scriptable) Context.javaToJS(obj, scope), null);
-	}
 
 	public class Facade {
 		@SuppressWarnings("unchecked")
@@ -74,8 +59,7 @@ System.out.println(methods.keySet());
 		public Prototype registerPrototype(ScriptableObject jsObject) throws GeneralModdingException {
 			return registerPrototype(null, jsObject);
 		}
-		
-		
+
 		@SuppressWarnings("unchecked")
 		public Prototype registerPrototype(Prototype prototype, ScriptableObject jsObject) throws GeneralModdingException {
 			String id = (String) jsObject.get("id");
@@ -98,26 +82,14 @@ System.out.println(methods.keySet());
 			
 			// At this point properties will have cloned version of the included
 			// properties, now we layer the defined properties on top of it.
-			
-			
 			properties.putAll(parseProperties((Map<String, Object>) jsObject.get("properties")));
 
 			Prototype result = new Prototype(id);
 			for (Map.Entry<String, DynamicProperty> e : properties.entrySet()) {
-				
-				DynamicProperty p = e.getValue();
-				String name = e.getKey();
-				result.addProperty(name, p);
-				if (p instanceof CalculatedProperty) {
-					methods.put(id+"Component!"+name, (Callable) p.getValue());
-				}
+				result.addProperty(e.getKey(), e.getValue());
 			}
 
-			
 			Map<String, Callable> listeners = (Map<String, Callable>) jsObject.get("listeners");
-			
-
-			
 			if (listeners != null) {
 				for (Map.Entry<String, Callable> e : listeners.entrySet()) {
 					Handler handler = new JsHandler(e.getValue());
@@ -126,9 +98,8 @@ System.out.println(methods.keySet());
 			}
 
 			Prototype.ConstructorParams constructor = (Prototype.ConstructorParams) jsObject.get("constructor");
-//			getConstructorSig(constructor, properties);
 			result.addConstructor(constructor);
-			methods.put(id+"Component"+INIT_SUFFIX, constructor.getInitializer());
+
 			return JsModManager.this.registerPrototype(result);
 		}
 		

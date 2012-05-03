@@ -1,15 +1,7 @@
 package org.ironchefpython.modapi.primitives;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.Modifier;
-import javassist.NotFoundException;
-
 import org.ironchefpython.modapi.AbstractDynamicProperty;
 import org.ironchefpython.modapi.DynamicProperty;
-import org.ironchefpython.modapi.Prototype;
 import org.ironchefpython.modapi.error.PropertyError;
 import org.mozilla.javascript.Callable;
 
@@ -25,11 +17,12 @@ public class CalculatedProperty implements DynamicProperty {
 			// 
 			return object == null ? this : new CalculatedProperty(type, (Callable)object);
 		}
-		public Object addToClass(String key, CtClass comp) throws CannotCompileException, NotFoundException {
-			throw new NoSuchMethodError();
+
+		public Class<?> getJavaType() {
+			return type.getJavaType();
 		}
-		public Class<?> getType() {
-			return type.getType();
+		public Class<?> getFieldType() {
+			return null;
 		}
 
 	}
@@ -52,16 +45,18 @@ public class CalculatedProperty implements DynamicProperty {
 		return callable;
 	}
 
-	public Object addToClass(String key, CtClass comp)
-			throws CannotCompileException, NotFoundException {
-		CtField f = new CtField(ClassPool.getDefault().get(Callable.class.getName()), key, comp);
-		f.setModifiers(Modifier.STATIC + Modifier.PUBLIC);
-		comp.addField(f);
-		return callable;
+
+
+	public Class<?> getJavaType() {
+		return type.getJavaType();
 	}
 
-	public Class<?> getType() {
-		return type.getType();
+	public boolean isStatic() {
+		return true;
+	}
+
+	public Class<?> getFieldType() {
+		return Callable.class;
 	}
 
 }

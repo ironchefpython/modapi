@@ -22,7 +22,7 @@ public class BooleanProperty implements DynamicProperty {
 			return null;
 		}
 
-		public Class<?> getType() {
+		public Class<?> getJavaType() {
 			return boolean.class;
 		}
 
@@ -55,7 +55,7 @@ public class BooleanProperty implements DynamicProperty {
 		return null;
 	}
 
-	public Class<?> getType() {
+	public Class<?> getJavaType() {
 		return boolean.class;
 	}
 
