@@ -7,21 +7,24 @@ import javassist.CtField;
 import javassist.Modifier;
 import javassist.NotFoundException;
 
+
 import org.ironchefpython.modapi.AbstractDynamicProperty;
 import org.ironchefpython.modapi.DynamicProperty;
+
 import org.ironchefpython.modapi.error.PropertyError;
 
-public class NumberProperty implements DynamicProperty {
+public class NumberProperty extends AbstractDynamicProperty {
 	public static final Class JAVA_CLASS = Number.class;
 	public static DynamicProperty NUMBER_TYPE = new AbstractDynamicProperty() {
 		public DynamicProperty cloneWith(Object object) {
 			return object == null ? this : new NumberProperty(Float.valueOf(object.toString()));
 		}
 
-		public void addToClass(String key, CtClass comp) throws CannotCompileException, NotFoundException {
+		public Object addToClass(String key, CtClass comp) throws CannotCompileException, NotFoundException {
 			CtField f = new CtField(ClassPool.getDefault().get(JAVA_CLASS.getCanonicalName()), key, comp);
 			f.setModifiers(Modifier.PUBLIC);
 			comp.addField(f);
+			return null;
 		}
 
 		public Class<?> getType() {
@@ -48,11 +51,12 @@ public class NumberProperty implements DynamicProperty {
 		return value;
 	}
 
-	public void addToClass(String key, CtClass comp)
+	public Object addToClass(String key, CtClass comp)
 			throws CannotCompileException, NotFoundException {
 		CtField f = new CtField(ClassPool.getDefault().get(JAVA_CLASS.getCanonicalName()), key, comp);
 		f.setModifiers(Modifier.STATIC + Modifier.PUBLIC);
 		comp.addField(f, CtField.Initializer.constant(value));
+		return null;
 	}
 
 	public Class<?> getType() {

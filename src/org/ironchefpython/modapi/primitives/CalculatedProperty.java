@@ -25,7 +25,7 @@ public class CalculatedProperty implements DynamicProperty {
 			// 
 			return object == null ? this : new CalculatedProperty(type, (Callable)object);
 		}
-		public void addToClass(String key, CtClass comp) throws CannotCompileException, NotFoundException {
+		public Object addToClass(String key, CtClass comp) throws CannotCompileException, NotFoundException {
 			throw new NoSuchMethodError();
 		}
 		public Class<?> getType() {
@@ -52,19 +52,12 @@ public class CalculatedProperty implements DynamicProperty {
 		return callable;
 	}
 
-	public void addToClass(String key, CtClass comp)
+	public Object addToClass(String key, CtClass comp)
 			throws CannotCompileException, NotFoundException {
-		CtField f = new CtField(ClassPool.getDefault().get(CallablePointer.class.getName()), key, comp);
+		CtField f = new CtField(ClassPool.getDefault().get(Callable.class.getName()), key, comp);
 		f.setModifiers(Modifier.STATIC + Modifier.PUBLIC);
-		comp.addField(f, CtField.Initializer.byNew(ClassPool.getDefault().get(CallablePointer.class.getName()), new String[]{key}));
-	}
-
-
-	public static class CallablePointer {
-		String name;
-		public CallablePointer(String[] args) {
-			this.name = args[0];
-		}
+		comp.addField(f);
+		return callable;
 	}
 
 	public Class<?> getType() {

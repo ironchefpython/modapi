@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 
 import org.mozilla.javascript.*;
+import org.mozilla.javascript.ast.Scope;
 import org.ironchefpython.modapi.error.*;
 import org.ironchefpython.modapi.primitives.*;
 
@@ -251,4 +252,13 @@ System.out.println(methods.keySet());
 		
 
 	}
+
+	public Scriptable getScope() {
+		return scope;
+	}
+
+	public Context getContext() {
+		return cx;
+	}
+	
 }

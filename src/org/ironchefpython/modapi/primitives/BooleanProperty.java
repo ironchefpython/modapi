@@ -5,9 +5,10 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.Modifier;
 
-import org.ironchefpython.modapi.AbstractDynamicProperty;
+
 import org.ironchefpython.modapi.DynamicProperty;
 import org.ironchefpython.modapi.error.PropertyError;
+import org.mozilla.javascript.Callable;
 
 public class BooleanProperty implements DynamicProperty {
 	public static DynamicProperty BOOLEAN_TYPE = new AbstractDynamicProperty() {
@@ -15,9 +16,10 @@ public class BooleanProperty implements DynamicProperty {
 			return (object == null ? this : new BooleanProperty(Boolean.valueOf(object.toString())));
 		}
 
-		public void addToClass(String key, CtClass comp) throws CannotCompileException {
+		public Object addToClass(String key, CtClass comp) throws CannotCompileException {
 			CtField f = new CtField(CtClass.booleanType, key, comp);
 			comp.addField(f);
+			return null;
 		}
 
 		public Class<?> getType() {
@@ -45,11 +47,12 @@ public class BooleanProperty implements DynamicProperty {
 		return value;
 	}
 
-	public void addToClass(String key, CtClass comp)
+	public Object addToClass(String key, CtClass comp)
 			throws CannotCompileException {
 		CtField f = new CtField(CtClass.booleanType, key, comp);
 		f.setModifiers(Modifier.STATIC);
 		comp.addField(f, CtField.Initializer.constant(value));
+		return null;
 	}
 
 	public Class<?> getType() {

@@ -10,7 +10,6 @@ import org.ironchefpython.modapi.Prototype.ConstructorParams;
 import org.ironchefpython.modapi.error.GeneralModdingException;
 import org.ironchefpython.modapi.error.InvalidComponentRegistration;
 import org.ironchefpython.modapi.primitives.PrototypeProperty;
-import org.ironchefpython.modapi.primitives.CalculatedProperty.CallablePointer;
 import org.mockengine.*;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.ScriptableObject;
