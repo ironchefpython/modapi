@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation=
+                   "http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="org.apache" module="hello-ivy"/>
+    <dependencies>
+         <dependency org="org.mozilla" name="rhino" rev="1.7R3" />
+         <dependency org="com.google.guava" name="guava" rev="r09"/>
+         <dependency org="org.mockito" name="mockito-all" rev="1.9.0"/>
+         <dependency org="junit" name="junit" rev="4.10"/>
+         <dependency org="javassist" name="javassist" rev="3.12.1.GA"/>
+    </dependencies>
+</ivy-module> 
