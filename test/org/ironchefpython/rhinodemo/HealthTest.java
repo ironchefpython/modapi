@@ -88,7 +88,6 @@ public class HealthTest {
 			body += "this." + provided[i] + "=$" + (i+1) + ";";
 		}
 		body += "}";
-System.out.println(body);
 		comp.addConstructor(CtNewConstructor.make(types, new CtClass[0], body, comp));
 		
 		return comp.toClass();
