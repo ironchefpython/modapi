@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockengine.DynamicComponent;
 import org.mockengine.DynamicComponent.Getter;
 import org.mockengine.DynamicComponent.Constructor;
-import org.mockengine.DynamicComponentFactory;
+import org.mockengine.DynamicEntitySystemFactory;
 import org.mockengine.DynamicSystem;
 
 
@@ -28,10 +28,10 @@ public class HealthTest {
 		mm.runScript(HealthTest.class.getResourceAsStream("health.js"), "health.js");
 		
 		// Create a factory that turns prototypes into Terasology Classes
-		DynamicComponentFactory componentFactory = new DynamicComponentFactory(mm);
+		DynamicEntitySystemFactory componentFactory = new DynamicEntitySystemFactory(mm);
 
 		// Create the HealthComponent class
-		Class<? extends DynamicComponent> HealthComponent = componentFactory.makeComponent("Health");
+		Class<? extends DynamicComponent> HealthComponent = componentFactory.getComponent("Health");
 
 		// Create a Constructor object that makes a new HealthComponent
 		Constructor ctr = new Constructor(HealthComponent, Number.class, Number.class, Number.class);
@@ -48,7 +48,7 @@ public class HealthTest {
 		System.out.println(ratio);
 		
 		
-		Class<? extends DynamicSystem> HealthSystem = componentFactory.makeSystem("Health");
+		DynamicSystem healthSystem = componentFactory.getSystem("Health");
 		
 	}
 	

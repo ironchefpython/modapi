@@ -96,5 +96,9 @@ public class Prototype  {
 		}
 	}
 
+	public Map<String, Callable> getHandlers() {
+		return handlers;
+	}
+
 
 }

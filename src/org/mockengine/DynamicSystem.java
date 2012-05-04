@@ -6,6 +6,7 @@ import java.util.Map;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.terasology.entitySystem.ComponentSystem;
 import org.terasology.entitySystem.EntityManager;
 import org.terasology.entitySystem.EntityRef;
 import org.terasology.entitySystem.Event;
@@ -14,45 +15,58 @@ import org.terasology.entitySystem.EventSystem;
 import org.terasology.game.CoreRegistry;
 
 
-public abstract class DynamicSystem {
+public class DynamicSystem implements ComponentSystem {
+    private final Scriptable scope;
+    private final Context cx;
+    private final Callable updater;
+    private final Class<? extends DynamicComponent> componentClass;
+    private final Map<String, Callable> handlers;
+    private final String name;
+	
+	public DynamicSystem(String name, Scriptable scope, Context cx, Callable updater,
+			Class<? extends DynamicComponent> compClass,
+			Map<String, Callable> handlers) {
+		this.name = name;
+		this.scope = scope;
+		this.cx = cx;
+		this.updater = updater;
+		this.componentClass = compClass;
+		this.handlers = handlers;
+	}
+	
     private EntityManager entityManager;
 	private EventSystem eventSystem;
-	
-    public void initialise() {
+
+	public void initialise() {
         entityManager = CoreRegistry.get(EntityManager.class);
     	eventSystem = CoreRegistry.get(EventSystem.class);
     	
-    	for (final Map.Entry<String, Callable> e : _getHandlers().entrySet()) {
+    	for (final Map.Entry<String, Callable> e : handlers.entrySet()) {
     		Class<? extends Event> eventClass = getEventByName(e.getKey());
 
 			EventReceiver reciever = new EventReceiver(){
     			public void onEvent(Event event, EntityRef entity) {
-    				call(e.getValue(), entity.getComponent(_getComponentClass()), new Object[]{event, entity});
+    				call(e.getValue(), entity.getComponent(componentClass), new Object[]{event, entity});
     			}
     		};
-    		eventSystem.registerEventReceiver(reciever, eventClass, _getComponentClass());
+    		eventSystem.registerEventReceiver(reciever, eventClass, componentClass);
     	}
     }
 
-    protected abstract Scriptable _getScope();
-    protected abstract Context _getContext();
-    protected abstract Callable _getUpdater();
-    protected abstract Class<? extends DynamicComponent> _getComponentClass();
-    protected abstract Map<String, Callable> _getHandlers();
     
     @SuppressWarnings("unchecked")
 	public void update(float delta) {
-        for (EntityRef entity : entityManager.iteratorEntities(_getComponentClass())) {
-        	DynamicComponent component = entity.getComponent(_getComponentClass());
-        	call( _getUpdater(), component, new Object[] {delta});
+        for (EntityRef entity : entityManager.iteratorEntities(componentClass)) {
+        	DynamicComponent component = entity.getComponent(componentClass);
+        	call(updater, component, new Object[] {delta});
             entity.saveComponent(component);
         }
     }
     
 	private Object call(Callable callable, DynamicComponent reciever,
 			Object[] args) {
-		return callable.call(_getContext(), _getScope(),
-				(Scriptable) Context.javaToJS(reciever, _getScope()), args);
+		return callable.call(cx, scope,
+				(Scriptable) Context.javaToJS(reciever, scope), args);
 	}
 	
 	private Class<? extends Event> getEventByName(String eventType) {
