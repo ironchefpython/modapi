@@ -14,23 +14,18 @@ public class ModManager {
 
 	private Map<String, Prototype> prototypes;
 	private Map<String, EventFactory> events;
-	private Engine game;
 	private String name;
 	private static Map<String, ModManager> mods = new HashMap<String, ModManager>();
 	
 	public static final String[] STRING_ARRAY = new String[0];
 	
-	public ModManager(Engine game, String modName) {
+	public ModManager(String modName) {
 		this.name = modName;
 		mods.put(name, this);
-		this.game = game;
 		prototypes = new HashMap<String, Prototype>();
 		events = new HashMap<String, EventFactory>();
 	}
 	
-	public Engine getGame() {
-		return game;
-	}
 	
 	public EventFactory registerEvent(EventFactory factory) throws InvalidEventRegistration {
 		String type = factory.getType();

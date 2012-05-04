@@ -2,7 +2,6 @@ package org.ironchefpython.modapi;
 
 import java.util.*;
 
-import org.mockengine.Event;
 
 public class CustomEventFactory implements EventFactory {
 	private Map<String, DynamicProperty> properties;
@@ -13,9 +12,9 @@ public class CustomEventFactory implements EventFactory {
 		this.properties = properties;
 	}
 	
-	public Event makeEvent(Map<String, Object> params) {
-		return new CustomEvent(type, properties, params);
-	}
+//	public Event makeEvent(Map<String, Object> params) {
+//		return new CustomEvent(type, properties, params);
+//	}
 
 	@Override
 	public String getType() {

@@ -7,8 +7,8 @@ import org.mockengine.DynamicComponent;
 import org.mockengine.DynamicComponent.Getter;
 import org.mockengine.DynamicComponent.Constructor;
 import org.mockengine.DynamicComponentFactory;
-import org.mockengine.Engine;
-import org.mockengine.MockEngine;
+import org.mockengine.DynamicSystem;
+
 
 
 public class HealthTest {
@@ -21,8 +21,8 @@ public class HealthTest {
 	@Test
 	public void mockTest() throws Exception {
 		
-		Engine game = new MockEngine();
-		JsModManager mm = new JsModManager(game, "health");
+
+		JsModManager mm = new JsModManager("health");
 		mm.registerEvent(new CustomEventFactory("full_health", null));
 		mm.registerEvent(new CustomEventFactory("no_health", null));
 		mm.runScript(HealthTest.class.getResourceAsStream("health.js"), "health.js");
@@ -40,12 +40,16 @@ public class HealthTest {
 		DynamicComponent o = ctr.newInstance(1,2,3);
 
 		// Create a getter for a HealthComponent property
-		Getter getRatio = new Getter(HealthComponent, "ratio");
+		Getter getRatio = o.new Getter(HealthComponent, "ratio");
 		
 		// Get the value for the property "ratio" on the instance o
 		Number ratio = (Number) getRatio.get(o);
 		
 		System.out.println(ratio);
+		
+		
+		Class<? extends DynamicSystem> HealthSystem = componentFactory.makeSystem("Health");
+		
 	}
 	
 }

@@ -2,26 +2,17 @@ package org.ironchefpython.modapi;
 
 import java.util.*;
 
+import org.ironchefpython.modapi.DynamicValueProperty.DynamicTypeProperty;
 import org.ironchefpython.modapi.error.InvalidComponentRegistration;
-import org.mockengine.*;
 import org.mozilla.javascript.Callable;
 
-public class Prototype implements EventTarget {
-
-
+public class Prototype  {
 	private String id;
 	private Map<String, DynamicProperty> properties;
+	private Map<String, Callable> handlers;
 	private DynamicProperty type;
 	private ConstructorParams constructor;
-
-	public Prototype(String id, Map<String, DynamicProperty> properties,
-			Map<String, Handler> listeners, Collection<String> includes)
-			throws InvalidComponentRegistration {
-		this(id);
-		if (properties != null) {
-			this.properties.putAll(properties);
-		}
-	}
+	private Callable updater;
 
 	public Prototype(String id) throws InvalidComponentRegistration {
 		if (id == null) {
@@ -29,7 +20,9 @@ public class Prototype implements EventTarget {
 		}
 		this.id = id;
 		this.properties = new HashMap<String, DynamicProperty>();
-		type = new DynamicValueProperty(Prototype.class, this);
+		this.handlers = new HashMap<String, Callable>();
+		
+		type = new PrototypeType(this);
 	}
 
 	public String getId() {
@@ -40,17 +33,8 @@ public class Prototype implements EventTarget {
 		properties.put(propName, prop);
 	}
 	
-	public void addEventListener(String type, Handler handler) {
-		// TODO Auto-generated method stub
-	}
-
-	public Collection<DynamicProperty> getProperties() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Object getPropertyValue(String propertyName) {
-		return properties.get(propertyName).getValue();
+	public void addEventListener(String type, Callable callable) {
+		this.handlers.put(type, callable);
 	}
 
 	public Map<String, DynamicProperty> getPropertyMap() {
@@ -59,14 +43,8 @@ public class Prototype implements EventTarget {
 	}
 
 	public DynamicProperty getType() {
-
 		return this.type;
 	}
-	
-    public interface EventReceiver<T extends Event> {
-        public void onEvent(T event, Entity entity);
-    }
-
 
 	public void addConstructor(ConstructorParams params) {
 		this.constructor = params;
@@ -75,7 +53,15 @@ public class Prototype implements EventTarget {
 	public ConstructorParams getConstructor() {
 		return constructor;
 	}
-
+	
+	public void setUpdater(Callable updater) {
+		this.updater = updater;
+	}
+	
+	public Callable getUpdater() {
+		return updater;
+	}
+	
 	public static class ConstructorParams {
 		protected String[] provided;
 		protected Callable initializer;
@@ -90,5 +76,25 @@ public class Prototype implements EventTarget {
 			return provided;
 		}
 	}
+
+	public static class PrototypeType extends DynamicTypeProperty {
+		private Prototype type;
+		public PrototypeType(Prototype type) {
+			this.type = type;
+		}
+		public DynamicProperty cloneWith(Object object) {
+			// FIXME validate that type is an ancestor of object
+			if (object == null) {
+				return this;
+			} else {
+				return new DynamicValueProperty(Prototype.class, object);
+			}
+		}
+
+		public Class<?> getJavaType() {
+			return Prototype.class;
+		}
+	}
+
 
 }

@@ -5,8 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
+import org.terasology.entitySystem.AbstractComponent;
+import org.terasology.entitySystem.Component;
 
-public class DynamicComponent {
+public class DynamicComponent extends  AbstractComponent {
 	
 	public static class Constructor {
 		private final java.lang.reflect.Constructor<? extends DynamicComponent> wrapped;
@@ -28,7 +30,7 @@ public class DynamicComponent {
 
 	}
 
-	public static class Getter {
+	public class Getter {
 		private final Context cx;
 		private final Scriptable scope;
 		private final Callable callable;
@@ -41,7 +43,7 @@ public class DynamicComponent {
 			this.callable = (Callable) cls.getField(fieldName).get(null);
 		}		
 		
-		public Object get(Object instance) {
+		public Object get(DynamicComponent instance) {
 			return callable.call(cx, scope, (Scriptable) Context.javaToJS(instance, scope), null);
 		}
 	}

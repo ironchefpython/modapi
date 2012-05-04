@@ -7,10 +7,8 @@ import java.util.*;
 import org.mozilla.javascript.*;
 import org.ironchefpython.modapi.error.*;
 
-import org.mockengine.Engine;
-import org.mockengine.Entity;
-import org.mockengine.Event;
-import org.mockengine.Handler;
+
+
 
 public class JsModManager extends ModManager {
 	private Context cx;
@@ -57,8 +55,8 @@ public class JsModManager extends ModManager {
 		
 	}
 	
-	public JsModManager(Engine game, String modName) {
-		super(game, modName);
+	public JsModManager(String modName) {
+		super(modName);
         cx = Context.enter();
         scope = cx.initStandardObjects();
 
@@ -128,11 +126,10 @@ public class JsModManager extends ModManager {
 				result.addProperty(e.getKey(), e.getValue());
 			}
 
-			Map<String, Callable> listeners = (Map<String, Callable>) jsObject.get("listeners");
+			Map<String, Callable> listeners = (Map<String, Callable>) jsObject.get("handlers");
 			if (listeners != null) {
 				for (Map.Entry<String, Callable> e : listeners.entrySet()) {
-					Handler handler = new JsHandler(e.getValue());
-					result.addEventListener(e.getKey(), handler);
+					result.addEventListener(e.getKey(), e.getValue());
 				}
 			}
 
@@ -231,6 +228,7 @@ public class JsModManager extends ModManager {
 		Map<String, DynamicProperty> result = new HashMap<String, DynamicProperty>();
 		for (Map.Entry<String, DynamicProperty> e : source.entrySet()) {
 			String propName = e.getKey();
+System.out.println(propName + "-->" + jsObject.get(propName));
 			result.put(propName, e.getValue().cloneWith(jsObject.get(propName)));
 		}
 		return result;
@@ -247,21 +245,6 @@ public class JsModManager extends ModManager {
 	
 
 
-	public class JsHandler implements Handler {
-		private Callable function;
-		
-		public JsHandler(Callable f) {
-			this.function = f;
-		}
-		
-		public void handleEvent(Event event, Entity currentTarget) {
-			Scriptable thisObj = null;  // get this from currentTarget 
-			function.call(cx, scope, thisObj, new Object[]{event});
-			
-		}
-		
-
-	}
 
 	public Scriptable getScope() {
 		return scope;

@@ -50,7 +50,7 @@ Health = manager.registerPrototype({
     	}
     },
     "update": function(delta, entity) {
-        if (health.currentHealth <= 0 || health.currentHealth == health.maxHealth || health.regenRate == 0) {
+        if (this.currentHealth <= 0 || this.currentHealth == this.maxHealth || this.regenRate == 0) {
             return;
         }
         this.timeSinceLastDamage += delta;

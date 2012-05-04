@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import org.ironchefpython.modapi.JsModManager;
 import org.junit.Test;
-import org.mockengine.Engine;
-import org.mockengine.MockEngine;
+
 
 public class ModTest {
 	
@@ -15,10 +14,10 @@ public class ModTest {
 	
 	@Test
 	public void mockTest() throws IOException {
-		Engine game = new MockEngine();
 
 
-		JsModManager mm = new JsModManager(game, "test");
+
+		JsModManager mm = new JsModManager("test");
 
 		mm.runScript(ModTest.class.getResourceAsStream("testmod.js"), "testmod.js");
 		
