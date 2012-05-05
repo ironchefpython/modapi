@@ -8,34 +8,34 @@ import org.ironchefpython.modapi.error.InvalidEventRegistration;
 import org.ironchefpython.modapi.error.UnregisteredEventException;
 
 
-public class ModManager {
+public class ModRegistry {
 
 	private Map<String, Prototype> prototypes;
-	private Map<String, EventFactory> events;
+	private Map<String, EventDefinition> events;
 	private String name;
-	private static Map<String, ModManager> mods = new HashMap<String, ModManager>();
+	private static Map<String, ModRegistry> mods = new HashMap<String, ModRegistry>();
 	
 	public static final String[] STRING_ARRAY = new String[0];
 	
-	public ModManager(String modName) {
+	public ModRegistry(String modName) {
 		this.name = modName;
 		mods.put(name, this);
 		prototypes = new HashMap<String, Prototype>();
-		events = new HashMap<String, EventFactory>();
+		events = new HashMap<String, EventDefinition>();
 	}
 	
 	
-	public EventFactory registerEvent(EventFactory factory) throws InvalidEventRegistration {
-		String type = factory.getType();
+	public EventDefinition registerEvent(EventDefinition event) throws InvalidEventRegistration {
+		String type = event.getType();
 		if (events.containsKey(type)) {
 			throw new InvalidEventRegistration(type);
 		}
-		events.put(type, factory);
-		return factory;
+		events.put(type, event);
+		return event;
 	}
 
-	public EventFactory getEvent(String name) throws UnregisteredEventException {
-		EventFactory result = events.get(name);
+	public EventDefinition getEvent(String name) throws UnregisteredEventException {
+		EventDefinition result = events.get(name);
 		if (result == null) {
 			throw new UnregisteredEventException(name);
 		}
@@ -75,7 +75,7 @@ public class ModManager {
 	
 
 	
-//void makeTools(ModManager m, Prototype material) {
+//void makeTools(ModRegistry m, Prototype material) {
 //	String id = material.getId() + "_axe";
 //	Prototype axeWithMat = new Prototype(id, m.getPrototype("Axe"));
 //	axeWithMat.setProperty("material", material);

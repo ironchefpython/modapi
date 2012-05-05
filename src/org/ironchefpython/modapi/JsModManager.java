@@ -6,9 +6,10 @@ import java.util.*;
 import org.mozilla.javascript.*;
 import org.ironchefpython.modapi.error.*;
 
-public class JsModManager extends ModManager {
+public class JsModManager {
 	private Context cx;
 	private Scriptable scope;
+	private ModRegistry registry;
 	
 	public enum Primitive implements DynamicProperty {
 		BOOLEAN(boolean.class), 
@@ -51,8 +52,8 @@ public class JsModManager extends ModManager {
 		
 	}
 	
-	public JsModManager(String modName) {
-		super(modName);
+	public JsModManager(ModRegistry registry, String modName) {
+		this.registry = registry;
         cx = Context.enter();
         scope = cx.initStandardObjects();
 
@@ -80,13 +81,13 @@ public class JsModManager extends ModManager {
 
 	public class Facade {
 		@SuppressWarnings("unchecked")
-		public EventFactory registerEvent(ScriptableObject jsObject) throws InvalidEventRegistration {
+		public EventDefinition registerEvent(ScriptableObject jsObject) throws InvalidEventRegistration {
 //System.out.println(JSON.stringify(cx, scope, jsObject, null, null));
 			
 			String type = (String) jsObject.get("type");
 			Map<String, DynamicProperty> properties = parseProperties((Map<String, Object>) jsObject.get("properties"));
-			EventFactory result = new CustomEventFactory(type, properties);
-			return JsModManager.this.registerEvent(result);
+			EventDefinition result = new EventDefinition(type, properties);
+			return registry.registerEvent(result);
 		}
 
 		public Prototype registerPrototype(ScriptableObject jsObject) throws GeneralModdingException {
@@ -132,7 +133,7 @@ public class JsModManager extends ModManager {
 			Prototype.ConstructorParams constructor = (Prototype.ConstructorParams) jsObject.get("constructor");
 			result.addConstructor(constructor);
 
-			return JsModManager.this.registerPrototype(result);
+			return registry.registerPrototype(result);
 		}
 		
 		public Prototype.ConstructorParams makeConstructor(String[] provided, Callable initializer) {
@@ -169,18 +170,17 @@ public class JsModManager extends ModManager {
 		}
 
 
-
-		public EventFactory getEvent(String name) throws UnregisteredEventException {
-			return JsModManager.this.getEvent(name);
+		public EventDefinition getEvent(String name) throws UnregisteredEventException {
+			return registry.getEvent(name);
 		}
 
 		public Prototype getPrototype(String name)
 				throws InvalidComponentRegistration {
-			return JsModManager.this.getPrototype(name);
+			return registry.getPrototype(name);
 		}
 
 		public Prototype[] getPrototypes() {
-			return JsModManager.this.getPrototypes();
+			return registry.getPrototypes();
 		}
 	}
 	
