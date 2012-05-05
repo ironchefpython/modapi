@@ -3,7 +3,7 @@ package org.ironchefpython.modapi;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ironchefpython.modapi.error.InvalidComponentRegistration;
+import  org.ironchefpython.modapi.error.InvalidComponentRegistration;
 import org.ironchefpython.modapi.error.InvalidEventRegistration;
 import org.ironchefpython.modapi.error.UnregisteredEventException;
 
