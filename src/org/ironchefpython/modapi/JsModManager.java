@@ -1,14 +1,10 @@
 package org.ironchefpython.modapi;
 
-
 import java.io.*;
 import java.util.*;
 
 import org.mozilla.javascript.*;
 import org.ironchefpython.modapi.error.*;
-
-
-
 
 public class JsModManager extends ModManager {
 	private Context cx;
@@ -228,7 +224,6 @@ public class JsModManager extends ModManager {
 		Map<String, DynamicProperty> result = new HashMap<String, DynamicProperty>();
 		for (Map.Entry<String, DynamicProperty> e : source.entrySet()) {
 			String propName = e.getKey();
-System.out.println(propName + "-->" + jsObject.get(propName));
 			result.put(propName, e.getValue().cloneWith(jsObject.get(propName)));
 		}
 		return result;
@@ -243,15 +238,16 @@ System.out.println(propName + "-->" + jsObject.get(propName));
 		throw new NoSuchMethodError();
 	}
 	
-
-
-
 	public Scriptable getScope() {
 		return scope;
 	}
 
 	public Context getContext() {
 		return cx;
+	}
+
+	public void putInScope(String name, Class<?> cls) {
+		ScriptableObject.putProperty(scope, name, new NativeJavaClass(scope, cls));
 	}
 	
 }

@@ -34,22 +34,24 @@ Health = manager.registerPrototype({
         this.currentHealth = this.maxHealth;
     }),
     "handlers": {
-        "damage": function(event) {
-            applyDamage.call(this, event.target, event.amount, event.instigator);
+        "damage": function(event, entity) {
+            applyDamage.call(this, entity, event.amount, event.instigator);
         },
-        "land": function(event) {
-            if (event.velocity.y < 0 && -event.velocity.y > thisfallingDamageSpeedThreshold) {
-                var damage = Math.int((-event.velocity.y - fallingDamageSpeedThreshold) * excessSpeedDamageMultiplier);
+        "verticalCollision": function(event, entity) {
+            if (event.velocity.y < 0 && -event.velocity.y > fallingDamageSpeedThreshold) {
+                var damage = Math.round((-event.velocity.y - fallingDamageSpeedThreshold) * excessSpeedDamageMultiplier);
                 if (damage > 0) {
-                    applyDamage.call(this, entity.target, damage, null);
+                	console.log("applying damage: " + damage);
+                    applyDamage.call(this, entity, damage, null);
                 }
             }
         },
-    	"healFull": function(event) {
+    	"fullHeal": function(event, entity) {
    		 	this.currentHealth = this.maxHealth;
     	}
     },
     "update": function(delta, entity) {
+    	console.log("updating");
         if (this.currentHealth <= 0 || this.currentHealth == this.maxHealth || this.regenRate == 0) {
             return;
         }
