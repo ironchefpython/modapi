@@ -118,7 +118,7 @@ public class JsModManager {
 			// properties, now we layer the defined properties on top of it.
 			properties.putAll(parseProperties((Map<String, Object>) jsObject.get("properties")));
 
-			Prototype result = new Prototype(id);
+			Prototype result = new JsPrototype(id);
 			for (Map.Entry<String, DynamicProperty> e : properties.entrySet()) {
 				result.addProperty(e.getKey(), e.getValue());
 			}
@@ -249,5 +249,20 @@ public class JsModManager {
 	public void putInScope(String name, Class<?> cls) {
 		ScriptableObject.putProperty(scope, name, new NativeJavaClass(scope, cls));
 	}
+	
+	public class JsPrototype extends Prototype {
+
+		public JsPrototype(String id) throws InvalidComponentRegistration {
+			super(id);
+		}
+		
+		public Scriptable getScope() {
+			return scope;
+		}
+
+		public Context getContext() {
+			return cx;
+		}
+}
 	
 }
