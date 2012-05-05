@@ -12,14 +12,11 @@ public class ModRegistry {
 
 	private Map<String, Prototype> prototypes;
 	private Map<String, EventDefinition> events;
-	private String name;
-	private static Map<String, ModRegistry> mods = new HashMap<String, ModRegistry>();
+//	private static Map<String, ModRegistry> mods = new HashMap<String, ModRegistry>();
 	
 	public static final String[] STRING_ARRAY = new String[0];
 	
-	public ModRegistry(String modName) {
-		this.name = modName;
-		mods.put(name, this);
+	public ModRegistry() {
 		prototypes = new HashMap<String, Prototype>();
 		events = new HashMap<String, EventDefinition>();
 	}

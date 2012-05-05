@@ -16,10 +16,10 @@ public class HealthTest {
 	@Test
 	public void mockTest() throws Exception {
 		
-
-		JsModManager mm = new JsModManager("health");
-		mm.registerEvent(new CustomEventFactory("full_health", null));
-		mm.registerEvent(new CustomEventFactory("no_health", null));
+		ModRegistry registry = new ModRegistry();
+		JsModManager mm = new JsModManager(registry, "health");
+//		mm.registerEvent(new CustomEventFactory("full_health", null));
+//		mm.registerEvent(new CustomEventFactory("no_health", null));
 		mm.runScript(HealthTest.class.getResourceAsStream("health.js"), "health.js");
 		
 		// Create a factory that turns prototypes into Terasology Classes

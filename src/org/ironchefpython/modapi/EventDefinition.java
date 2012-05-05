@@ -15,6 +15,11 @@ public class EventDefinition {
 	public String getType() {
 		return type;
 	}
+
+	public void addProperty(String key, DynamicProperty value) {
+		this.properties.put(key, value);
+		
+	}
 	
 	
 	

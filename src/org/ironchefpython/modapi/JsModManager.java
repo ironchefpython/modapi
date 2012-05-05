@@ -73,7 +73,7 @@ public class JsModManager {
 		cx.evaluateString(scope, s, "<cmd>", 0, null);
 	}
 
-	public class Console {
+	public static class Console {
 		public void log(String s) {
 			System.err.println("js> " + s);
 		}
@@ -86,7 +86,11 @@ public class JsModManager {
 			
 			String type = (String) jsObject.get("type");
 			Map<String, DynamicProperty> properties = parseProperties((Map<String, Object>) jsObject.get("properties"));
-			EventDefinition result = new EventDefinition(type, properties);
+			EventDefinition result = new EventDefinition(type);
+			for (Map.Entry<String, DynamicProperty> e : properties.entrySet()) {
+				result.addProperty(e.getKey(), e.getValue());
+			}
+			
 			return registry.registerEvent(result);
 		}
 
