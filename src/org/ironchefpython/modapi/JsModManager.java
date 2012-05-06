@@ -12,13 +12,13 @@ public class JsModManager {
 	private ModRegistry registry;
 	
 	public enum Primitive implements DynamicProperty {
-		BOOLEAN(boolean.class), 
+		BOOLEAN(Boolean.TYPE), 
 		STRING(String.class), 
 		NUMBER(Number.class),
 		COLOR(String.class), 
 		FUNCTION(Callable.class), 
 		TEXTURE(String.class),
-		DOUBLE(double.class),
+		DOUBLE(Double.TYPE),
 		;
 		
 		private final Class<?> type;
