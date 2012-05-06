@@ -18,6 +18,7 @@ public class JsModManager {
 		COLOR(String.class), 
 		FUNCTION(Callable.class), 
 		TEXTURE(String.class),
+		DOUBLE(double.class),
 		;
 		
 		private final Class<?> type;

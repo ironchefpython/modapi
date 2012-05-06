@@ -3,6 +3,7 @@ package org.ironchefpython.rhinodemo;
 import java.io.IOException;
 
 import org.ironchefpython.modapi.JsModManager;
+import org.ironchefpython.modapi.ModRegistry;
 import org.junit.Test;
 
 
@@ -16,8 +17,8 @@ public class ModTest {
 	public void mockTest() throws IOException {
 
 
-
-		JsModManager mm = new JsModManager("test");
+		ModRegistry registry = new ModRegistry();
+		JsModManager mm = new JsModManager(registry, "test");
 
 		mm.runScript(ModTest.class.getResourceAsStream("testmod.js"), "testmod.js");
 		
