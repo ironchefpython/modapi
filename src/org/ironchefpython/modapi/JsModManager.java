@@ -170,6 +170,10 @@ public class JsModManager {
 			return Primitive.TEXTURE;
 		}
 
+		public DynamicProperty getDoubleType() {
+			return Primitive.DOUBLE;
+		}
+
 		public DynamicProperty calculatedType(DynamicProperty type, Callable callable) {
 			return new CalculatedProperty(type, callable);
 		}
